@@ -7,6 +7,6 @@ RUN \
  apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev
 RUN apk add --no-cache supervisor \
     && python -m pip install --upgrade pip \
-    && pip install -r /requirements.txt
+    && pip install -r requirements.txt
 EXPOSE 5000
 CMD ["/bin/bash", "entrypoint.sh"]
