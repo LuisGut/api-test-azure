@@ -20,8 +20,8 @@ jobs:
            username: ${{ secrets.ACR_USERNAME }}
            password: ${{ secrets.ACR_PASSWORD }}
       - run: |
-          docker build . --file prod.Dockerfile -t ${{ secrets.ACR_ENDPOINT }}/api-test:${{ github.sha }}
-          docker push ${{ secrets.ACR_ENDPOINT }}/api-test:${{ github.sha }}
+          docker build . --file prod.Dockerfile -t ${{ secrets.ACR_ENDPOINT }}/api-test:latest
+          docker push ${{ secrets.ACR_ENDPOINT }}/api-test:latest
       # Set the target AKS cluster.
       - uses: Azure/aks-set-context@v1
         with:
@@ -42,6 +42,6 @@ jobs:
           manifests: |
             k8s/deployment.yaml
           images: |
-            apitestflask.azurecr.io/api-test:${{ github.sha }}
+            apitestflask.azurecr.io/api-test:latest
           imagepullsecrets: |
             api-test-k8s-secret      
