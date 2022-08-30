@@ -23,25 +23,25 @@ jobs:
           docker build . --file prod.Dockerfile -t ${{ secrets.ACR_ENDPOINT }}/api-test:${{ github.sha }}
           docker push ${{ secrets.ACR_ENDPOINT }}/api-test:${{ github.sha }}
       # Set the target AKS cluster.
-      # - uses: Azure/aks-set-context@v1
-      #   with:
-      #     creds: '${{ secrets.AZURE_CREDENTIALS }}'
-      #     cluster-name: api-test
-      #     resource-group: api-test
+      - uses: Azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: api-test-cluster
+          resource-group: api_test
 
-      # - uses: Azure/k8s-create-secret@v1.1
-      #   with:
-      #     container-registry-url: apitestflask.azurecr.io
-      #     container-registry-username: ${{ secrets.ACR_USERNAME }}
-      #     container-registry-password: ${{ secrets.ACR_PASSWORD }}
-      #     secret-name: api-test-k8s-secret
+      - uses: Azure/k8s-create-secret@v1.1
+        with:
+          container-registry-url: apitestflask.azurecr.io
+          container-registry-username: ${{ secrets.ACR_USERNAME }}
+          container-registry-password: ${{ secrets.ACR_PASSWORD }}
+          secret-name: api-test-k8s-secret
 
-      # - uses: Azure/k8s-deploy@v3.1
-      #   with:
-      #     action: deploy
-      #     manifests: |
-      #       k8s/deployment.yaml
-      #     images: |
-      #       apitestflask.azurecr.io/api-test:${{ github.sha }}
-      #     imagepullsecrets: |
-      #       api-test-k8s-secret      
+      - uses: Azure/k8s-deploy@v3.1
+        with:
+          action: deploy
+          manifests: |
+            k8s/deployment.yaml
+          images: |
+            apitestflask.azurecr.io/api-test:${{ github.sha }}
+          imagepullsecrets: |
+            api-test-k8s-secret      

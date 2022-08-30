@@ -1,0 +1,53 @@
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "flask"
+  namespace: "api-test"
+  labels:
+    app: "flask"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "flask"
+  template:
+    metadata:
+      labels:
+        app: "flask"
+    spec:
+      containers:
+      - name: "flask"
+        imagePullPolicy: Always
+        image: CONTAINER_IMAGE
+
+
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "flask-service"
+  namespace: "api-test"
+  labels:
+    app: "flask"
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb  
+spec:
+  ports:
+  - protocol: "TCP"
+    port: 80
+    targetPort: 5000
+  selector:
+    app: "flask"
+  type: "LoadBalancer"
+
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+ name: postgres
+ namespace: "api-test"
+spec:
+ type: ExternalName
+ externalName: api-test.postgres.database.azure.com
+
